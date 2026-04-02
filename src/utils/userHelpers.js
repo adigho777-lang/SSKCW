@@ -71,6 +71,7 @@ export const getUserPhone = () => {
   return user ? user.phone : null;
 };
 
+// eslint-disable-next-line import/no-anonymous-default-export
 export default {
   getCurrentUser,
   isUserLoggedIn,
