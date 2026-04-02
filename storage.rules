@@ -1,0 +1,22 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    
+    // Helper function to check if user is admin
+    function isAdmin() {
+      return request.auth != null && (
+        firestore.exists(/databases/(default)/documents/admins/$(request.auth.uid)) ||
+        (request.auth.token.phone_number != null && 
+         firestore.exists(/databases/(default)/documents/admins/$(request.auth.token.phone_number))) ||
+        (request.auth.token.email != null && 
+         firestore.exists(/databases/(default)/documents/admins/$(request.auth.token.email)))
+      );
+    }
+    
+    // Products folder - images
+    match /products/{allPaths=**} {
+      allow read: if true; // Anyone can read product images
+      allow write: if isAdmin(); // Only admins can upload/delete images
+    }
+  }
+}
