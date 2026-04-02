@@ -14,7 +14,8 @@ import {
   FaShieldAlt,
   FaExclamationTriangle,
   FaQuestionCircle,
-  FaStar
+  FaStar,
+  FaChevronDown
 } from 'react-icons/fa';
 
 const ProductDetail = ({ onOrderClick }) => {
@@ -116,7 +117,10 @@ const ProductDetail = ({ onOrderClick }) => {
               <img
                 src={images[selectedImage]}
                 alt={product.title}
-                className="w-full h-96 object-cover"
+                className="w-full h-[500px] object-contain bg-white p-4"
+                onError={(e) => {
+                  e.target.src = 'https://via.placeholder.com/500x500?text=No+Image';
+                }}
               />
             </div>
 
@@ -136,7 +140,10 @@ const ProductDetail = ({ onOrderClick }) => {
                     <img
                       src={img}
                       alt={`${product.title} ${index + 1}`}
-                      className="w-full h-20 object-cover"
+                      className="w-full h-20 object-contain p-2"
+                      onError={(e) => {
+                        e.target.src = 'https://via.placeholder.com/100x100?text=No+Image';
+                      }}
                     />
                   </button>
                 ))}
@@ -328,6 +335,17 @@ const ProductDetail = ({ onOrderClick }) => {
             </div>
           </div>
         </div>
+
+        {/* Scroll Down Indicator */}
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5, repeat: Infinity, repeatType: "reverse", duration: 1 }}
+          className="text-center mt-8 mb-4"
+        >
+          <p className="text-gray-600 font-semibold mb-2">Scroll down for more information</p>
+          <FaChevronDown className="mx-auto text-primary text-2xl animate-bounce" />
+        </motion.div>
 
         {/* Additional Information Sections */}
         <div className="mt-12 space-y-8">

@@ -196,12 +196,12 @@ const Products = ({ onOrderClick }) => {
                 className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 group"
               >
                 {/* Product Image with Badge */}
-                <div className="relative overflow-hidden cursor-pointer" onClick={() => navigate(`/product/${product.id}`)}>
+                <div className="relative overflow-hidden cursor-pointer bg-white" onClick={() => navigate(`/product/${product.id}`)}>
                   {(product.thumbnail || product.imageUrl || product.image) && (
                     <img
                       src={product.thumbnail || product.imageUrl || product.image}
                       alt={product.title}
-                      className="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-300"
+                      className="w-full h-64 object-contain p-4 group-hover:scale-110 transition-transform duration-300"
                       loading="lazy"
                       onError={(e) => {
                         e.target.src = 'https://via.placeholder.com/400x300?text=No+Image';
