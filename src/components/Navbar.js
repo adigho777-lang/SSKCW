@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { FaBars, FaTimes, FaUser } from 'react-icons/fa';
 import { getCurrentUser, isUserLoggedIn } from '../utils/userHelpers';
+import LanguageSwitcher from './LanguageSwitcher';
 
 const Navbar = () => {
+  const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
@@ -51,10 +54,12 @@ const Navbar = () => {
           </div>
           
           <div className="hidden md:flex space-x-8 items-center">
-            <button onClick={goToHome} className="text-gray-700 hover:text-primary transition font-medium">Home</button>
+            <button onClick={goToHome} className="text-gray-700 hover:text-primary transition font-medium">{t('nav.home')}</button>
             <button onClick={() => scrollToSection('services')} className="text-gray-700 hover:text-primary transition font-medium">Services</button>
-            <button onClick={goToProducts} className="text-gray-700 hover:text-primary transition font-medium">Products</button>
-            <button onClick={() => scrollToSection('contact')} className="text-gray-700 hover:text-primary transition font-medium">Contact</button>
+            <button onClick={goToProducts} className="text-gray-700 hover:text-primary transition font-medium">{t('nav.products')}</button>
+            <button onClick={() => scrollToSection('contact')} className="text-gray-700 hover:text-primary transition font-medium">{t('nav.contact')}</button>
+            
+            <LanguageSwitcher />
             
             {user ? (
               <button
@@ -70,7 +75,7 @@ const Navbar = () => {
                 className="flex items-center bg-primary text-white px-4 py-2 rounded-lg hover:bg-secondary transition font-medium"
               >
                 <FaUser className="mr-2" />
-                Login
+                {t('nav.login')}
               </button>
             )}
           </div>
@@ -84,10 +89,14 @@ const Navbar = () => {
       {isOpen && (
         <div className="md:hidden bg-white border-t">
           <div className="px-2 pt-2 pb-3 space-y-1">
-            <button onClick={goToHome} className="block w-full text-left px-3 py-2 text-gray-700 hover:bg-gray-100 font-medium">Home</button>
+            <button onClick={goToHome} className="block w-full text-left px-3 py-2 text-gray-700 hover:bg-gray-100 font-medium">{t('nav.home')}</button>
             <button onClick={() => scrollToSection('services')} className="block w-full text-left px-3 py-2 text-gray-700 hover:bg-gray-100 font-medium">Services</button>
-            <button onClick={goToProducts} className="block w-full text-left px-3 py-2 text-gray-700 hover:bg-gray-100 font-medium">Products</button>
-            <button onClick={() => scrollToSection('contact')} className="block w-full text-left px-3 py-2 text-gray-700 hover:bg-gray-100 font-medium">Contact</button>
+            <button onClick={goToProducts} className="block w-full text-left px-3 py-2 text-gray-700 hover:bg-gray-100 font-medium">{t('nav.products')}</button>
+            <button onClick={() => scrollToSection('contact')} className="block w-full text-left px-3 py-2 text-gray-700 hover:bg-gray-100 font-medium">{t('nav.contact')}</button>
+            
+            <div className="px-3 py-2">
+              <LanguageSwitcher />
+            </div>
             
             {user ? (
               <button
@@ -103,7 +112,7 @@ const Navbar = () => {
                 className="block w-full text-left px-3 py-2 bg-primary text-white hover:bg-secondary font-medium rounded"
               >
                 <FaUser className="inline mr-2" />
-                Login
+                {t('nav.login')}
               </button>
             )}
           </div>

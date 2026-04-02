@@ -15,6 +15,8 @@ import ApiSettings from './pages/admin/ApiSettings';
 import WhatsAppButton from './components/WhatsAppButton';
 import OrderModal from './components/OrderModal';
 import ProtectedRoute from './components/ProtectedRoute';
+import LanguagePopup from './components/LanguagePopup';
+import LanguageSwitcher from './components/LanguageSwitcher';
 
 function App() {
   const [selectedProduct, setSelectedProduct] = useState(null);
@@ -72,6 +74,13 @@ function App() {
           />
         </Routes>
         <WhatsAppButton />
+        <LanguagePopup />
+        
+        {/* Floating Language Switcher */}
+        <div className="fixed bottom-24 right-4 z-40">
+          <LanguageSwitcher />
+        </div>
+        
         {selectedProduct && (
           <OrderModal
             product={selectedProduct}
