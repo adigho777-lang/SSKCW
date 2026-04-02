@@ -210,14 +210,15 @@ const Products = ({ onOrderClick }) => {
                   )}
                   
                   {/* Discount Badge */}
-                  {product.original_price && product.original_price > product.price && (
+                  {((product.price && product.discount_price && product.price > product.discount_price) || 
+                    (product.original_price && product.price && product.original_price > product.price)) && (
                     <motion.div
                       initial={{ scale: 0 }}
                       animate={{ scale: 1 }}
                       transition={{ delay: 0.2, type: "spring" }}
                       className="absolute top-4 right-4 bg-gradient-to-r from-red-500 to-red-600 text-white px-4 py-2 rounded-full font-bold text-sm shadow-lg"
                     >
-                      {calculateDiscount(product.price, product.original_price)}% OFF
+                      {product.discount_percent || calculateDiscount(product.discount_price || product.price, product.price || product.original_price)}% OFF
                     </motion.div>
                   )}
 
@@ -251,27 +252,58 @@ const Products = ({ onOrderClick }) => {
                   >
                     {product.title}
                   </h3>
-                  <p className="text-gray-600 text-sm mb-4 line-clamp-2">{product.description}</p>
+                  
+                  {/* Category */}
+                  {product.category && (
+                    <span className="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded mb-2">
+                      {product.category}
+                    </span>
+                  )}
+                  
+                  {/* Diseases Treated Tags */}
+                  {product.diseases_treated && product.diseases_treated.length > 0 && (
+                    <div className="mb-3">
+                      <div className="flex flex-wrap gap-1">
+                        {product.diseases_treated.slice(0, 2).map((disease, idx) => (
+                          <span
+                            key={idx}
+                            className="text-xs bg-red-100 text-red-700 px-2 py-1 rounded"
+                          >
+                            {disease}
+                          </span>
+                        ))}
+                        {product.diseases_treated.length > 2 && (
+                          <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded">
+                            +{product.diseases_treated.length - 2} more
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                  
+                  <p className="text-gray-600 text-sm mb-4 line-clamp-2">
+                    {product.short_description || product.description}
+                  </p>
                   
                   {/* Price Section - TAGADA LEVEL */}
-                  {product.price && (
+                  {(product.discount_price || product.price) && (
                     <div className="mb-4 bg-gradient-to-r from-green-50 to-blue-50 p-3 rounded-lg">
                       <div className="flex items-center justify-between mb-1">
                         <div className="flex items-center space-x-2">
                           <span className="text-3xl font-bold text-primary">
-                            ₹{product.price}
+                            ₹{product.discount_price || product.price}
                           </span>
-                          {product.original_price && product.original_price > product.price && (
+                          {product.price && product.discount_price && product.price > product.discount_price && (
                             <span className="text-xl text-gray-400 line-through">
-                              ₹{product.original_price}
+                              ₹{product.price}
                             </span>
                           )}
                         </div>
                       </div>
-                      {product.original_price && product.original_price > product.price && (
+                      {product.price && product.discount_price && product.price > product.discount_price && (
                         <div className="flex items-center justify-between">
                           <p className="text-sm text-green-600 font-bold">
-                            Save ₹{product.original_price - product.price}
+                            Save ₹{product.price - product.discount_price}
                           </p>
                           <p className="text-xs text-gray-500">
                             Inclusive of all taxes
