@@ -151,14 +151,43 @@ const ProductDetail = ({ onOrderClick }) => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
             >
-              {product.category && (
-                <span className="inline-block bg-primary text-white px-4 py-1 rounded-full text-sm font-semibold mb-3">
-                  {product.category}
-                </span>
-              )}
+              <div className="flex items-center gap-2 mb-3">
+                {product.category && (
+                  <span className="inline-block bg-primary text-white px-4 py-1 rounded-full text-sm font-semibold">
+                    {product.category}
+                  </span>
+                )}
+                {product.sub_category && (
+                  <span className="inline-block bg-blue-500 text-white px-4 py-1 rounded-full text-sm font-semibold">
+                    {product.sub_category}
+                  </span>
+                )}
+                {product.is_bestseller && (
+                  <span className="inline-block bg-yellow-500 text-white px-4 py-1 rounded-full text-sm font-semibold">
+                    ⭐ Bestseller
+                  </span>
+                )}
+                {product.is_featured && (
+                  <span className="inline-block bg-purple-500 text-white px-4 py-1 rounded-full text-sm font-semibold">
+                    ✨ Featured
+                  </span>
+                )}
+                {product.is_trending && (
+                  <span className="inline-block bg-pink-500 text-white px-4 py-1 rounded-full text-sm font-semibold">
+                    🔥 Trending
+                  </span>
+                )}
+              </div>
               <h1 className="text-4xl font-bold text-gray-900 mb-4">{product.title}</h1>
               {product.short_description && (
                 <p className="text-lg text-gray-600">{product.short_description}</p>
+              )}
+              {product.availability && (
+                <p className="text-sm mt-2">
+                  <span className={`font-semibold ${product.availability === 'In Stock' ? 'text-green-600' : 'text-red-600'}`}>
+                    {product.availability}
+                  </span>
+                </p>
               )}
             </motion.div>
 
@@ -302,6 +331,75 @@ const ProductDetail = ({ onOrderClick }) => {
 
         {/* Additional Information Sections */}
         <div className="mt-12 space-y-8">
+          {/* What Is It */}
+          {product.what_is_it && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl shadow-lg p-8 border border-blue-200"
+            >
+              <h2 className="text-3xl font-bold text-gray-900 mb-4">What Is It?</h2>
+              <p className="text-gray-700 text-lg leading-relaxed">{product.what_is_it}</p>
+            </motion.div>
+          )}
+
+          {/* Works For / Target Conditions */}
+          {(product.works_for || (product.target_conditions && product.target_conditions.length > 0)) && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="bg-white rounded-xl shadow-lg p-8"
+            >
+              <h2 className="text-3xl font-bold text-gray-900 mb-6">Works Best For</h2>
+              {product.works_for && (
+                <p className="text-gray-700 mb-4 leading-relaxed">{product.works_for}</p>
+              )}
+              {product.target_conditions && product.target_conditions.length > 0 && (
+                <div className="flex flex-wrap gap-2 mt-4">
+                  {product.target_conditions.map((condition, i) => (
+                    <span
+                      key={i}
+                      className="bg-purple-100 text-purple-800 px-4 py-2 rounded-lg text-sm font-semibold"
+                    >
+                      {condition}
+                    </span>
+                  ))}
+                </div>
+              )}
+            </motion.div>
+          )}
+
+          {/* Benefits Array */}
+          {product.benefits && product.benefits.length > 0 && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="bg-white rounded-xl shadow-lg p-8"
+            >
+              <h2 className="text-3xl font-bold text-gray-900 mb-6">Key Benefits</h2>
+              <ul className="grid md:grid-cols-2 gap-4">
+                {product.benefits.map((benefit, i) => (
+                  <li key={i} className="flex items-start">
+                    <FaCheckCircle className="text-green-500 mt-1 mr-3 flex-shrink-0" />
+                    <span className="text-gray-700">{benefit}</span>
+                  </li>
+                ))}
+              </ul>
+            </motion.div>
+          )}
+
+          {/* Trigger */}
+          {product.trigger && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="bg-yellow-50 border-l-4 border-yellow-500 rounded-xl shadow-lg p-8"
+            >
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">💡 Important Note</h2>
+              <p className="text-gray-700 text-lg leading-relaxed">{product.trigger}</p>
+            </motion.div>
+          )}
+
           {/* Description */}
           {(product.description_en || product.description) && (
             <motion.div
@@ -527,6 +625,74 @@ const ProductDetail = ({ onOrderClick }) => {
                   </div>
                 </div>
               )}
+            </motion.div>
+          )}
+
+          {/* Marathi Description */}
+          {product.description_mr && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="bg-white rounded-xl shadow-lg p-8 border-l-4 border-orange-500"
+            >
+              <h2 className="text-3xl font-bold text-gray-900 mb-6">उत्पादन वर्णन (मराठी)</h2>
+              <p className="text-gray-700 whitespace-pre-line leading-relaxed text-lg">
+                {product.description_mr}
+              </p>
+            </motion.div>
+          )}
+
+          {/* Related Products */}
+          {product.related_products && product.related_products.length > 0 && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="bg-white rounded-xl shadow-lg p-8"
+            >
+              <h2 className="text-3xl font-bold text-gray-900 mb-6">Related Products</h2>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {product.related_products.map((relatedId, i) => (
+                  <button
+                    key={i}
+                    onClick={() => navigate(`/product/${relatedId}`)}
+                    className="bg-blue-50 hover:bg-blue-100 border border-blue-200 rounded-lg p-4 text-center transition"
+                  >
+                    <p className="text-sm text-blue-800 font-semibold">View Product</p>
+                    <p className="text-xs text-gray-600 mt-1">{relatedId}</p>
+                  </button>
+                ))}
+              </div>
+            </motion.div>
+          )}
+
+          {/* Analytics & Stats */}
+          {(product.view_count || product.sales_count || product.wishlist_count) && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-xl shadow-lg p-8"
+            >
+              <h2 className="text-3xl font-bold text-gray-900 mb-6">Product Stats</h2>
+              <div className="grid grid-cols-3 gap-6">
+                {product.view_count && (
+                  <div className="text-center">
+                    <p className="text-4xl font-bold text-indigo-600">{product.view_count}</p>
+                    <p className="text-gray-600 mt-2">Views</p>
+                  </div>
+                )}
+                {product.sales_count && (
+                  <div className="text-center">
+                    <p className="text-4xl font-bold text-green-600">{product.sales_count}</p>
+                    <p className="text-gray-600 mt-2">Sales</p>
+                  </div>
+                )}
+                {product.wishlist_count && (
+                  <div className="text-center">
+                    <p className="text-4xl font-bold text-pink-600">{product.wishlist_count}</p>
+                    <p className="text-gray-600 mt-2">Wishlisted</p>
+                  </div>
+                )}
+              </div>
             </motion.div>
           )}
         </div>
