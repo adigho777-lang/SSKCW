@@ -1,35 +1,37 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FaArrowRight, FaCheckCircle } from 'react-icons/fa';
 
 const Hero = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [currentSlide, setCurrentSlide] = useState(0);
 
   const slides = [
     {
-      title: "Upgrade Your Health & Lifestyle Today",
-      subtitle: "Discover powerful products and solutions for your body",
+      title: t('hero.title'),
+      subtitle: t('hero.subtitle'),
       image: "https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=1200&h=600&fit=crop"
     },
     {
-      title: "Transform Your Body Naturally",
-      subtitle: "100% Ayurvedic products for complete wellness",
+      title: t('hero.title'),
+      subtitle: t('hero.subtitle'),
       image: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=1200&h=600&fit=crop"
     },
     {
-      title: "Expert Guidance for Your Health Goals",
-      subtitle: "Personalized solutions for BP, Sugar, Thyroid & More",
+      title: t('hero.title'),
+      subtitle: t('hero.subtitle'),
       image: "https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=1200&h=600&fit=crop"
     }
   ];
 
   const benefits = [
-    { icon: "🌿", title: "100% Natural", desc: "Pure Ayurvedic ingredients" },
-    { icon: "✅", title: "Certified", desc: "Quality assured products" },
-    { icon: "🚚", title: "Fast Delivery", desc: "Quick & reliable shipping" },
-    { icon: "💪", title: "Proven Results", desc: "Thousands of happy customers" }
+    { icon: "🌿", title: t('hero.natural'), desc: t('hero.naturalDesc') },
+    { icon: "✅", title: t('hero.certified'), desc: t('hero.certifiedDesc') },
+    { icon: "🚚", title: t('hero.fastDelivery'), desc: t('hero.fastDeliveryDesc') },
+    { icon: "💪", title: t('hero.provenResults'), desc: t('hero.provenResultsDesc') }
   ];
 
   useEffect(() => {
@@ -104,7 +106,7 @@ const Hero = () => {
                   whileHover={{ scale: 1.05, boxShadow: "0 20px 40px rgba(0,0,0,0.3)" }}
                   whileTap={{ scale: 0.95 }}
                 >
-                  <span>Explore Products</span>
+                  <span>{t('hero.exploreProducts')}</span>
                   <FaArrowRight className="group-hover:translate-x-2 transition-transform" />
                 </motion.button>
 
@@ -114,7 +116,7 @@ const Hero = () => {
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                 >
-                  Start Now
+                  {t('hero.startNow')}
                 </motion.button>
               </motion.div>
             </motion.div>
@@ -168,13 +170,13 @@ const Hero = () => {
             transition={{ delay: 1.2 }}
           >
             <h2 className="text-3xl font-bold text-white text-center mb-8">
-              Why Choose SSKCW?
+              {t('hero.whyChoose')}
             </h2>
             <div className="grid md:grid-cols-3 gap-6">
               {[
-                { title: "Expert Guidance", desc: "Personalized health solutions" },
-                { title: "Quality Products", desc: "100% authentic Ayurvedic products" },
-                { title: "Proven Results", desc: "Trusted by thousands of customers" }
+                { title: t('hero.expertGuidance'), desc: t('hero.expertGuidanceDesc') },
+                { title: t('hero.qualityProducts'), desc: t('hero.qualityProductsDesc') },
+                { title: t('hero.provenResultsTitle'), desc: t('hero.provenResultsDesc2') }
               ].map((item, index) => (
                 <motion.div
                   key={index}

@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import { getProducts } from '../services/api';
 import Navbar from '../components/Navbar';
 import { FaShoppingCart, FaEye, FaSearch } from 'react-icons/fa';
 
 const Products = ({ onOrderClick }) => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
@@ -153,9 +155,9 @@ const Products = ({ onOrderClick }) => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Header Section */}
         <div className="text-center mb-12 animate-fade-in">
-          <h1 className="text-5xl font-bold text-gray-900 mb-4">Our Products</h1>
+          <h1 className="text-5xl font-bold text-gray-900 mb-4">{t('products.title')}</h1>
           <p className="text-xl text-gray-600 mb-8">
-            Premium supplements to boost your fitness journey
+            {t('products.subtitle')}
           </p>
           
           {/* Search Bar */}
@@ -163,7 +165,7 @@ const Products = ({ onOrderClick }) => {
             <FaSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" />
             <input
               type="text"
-              placeholder="Search products..."
+              placeholder={t('products.searchPlaceholder')}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full pl-12 pr-4 py-4 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent text-lg"
@@ -174,15 +176,15 @@ const Products = ({ onOrderClick }) => {
         {/* Products Count */}
         <div className="mb-6">
           <p className="text-gray-600 text-lg">
-            Showing <span className="font-bold text-primary">{filteredProducts.length}</span> products
+            {t('products.showing')} <span className="font-bold text-primary">{filteredProducts.length}</span> {t('products.productsFound')}
           </p>
         </div>
 
         {/* Products Grid */}
         {filteredProducts.length === 0 ? (
           <div className="text-center py-20">
-            <p className="text-2xl text-gray-500">No products found</p>
-            <p className="text-gray-400 mt-2">Try a different search term</p>
+            <p className="text-2xl text-gray-500">{t('products.noProducts')}</p>
+            <p className="text-gray-400 mt-2">{t('products.tryDifferent')}</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
@@ -239,7 +241,7 @@ const Products = ({ onOrderClick }) => {
                       className="bg-white text-primary px-6 py-3 rounded-lg font-semibold flex items-center space-x-2"
                     >
                       <FaEye />
-                      <span>Quick View</span>
+                      <span>{t('products.viewDetails')}</span>
                     </motion.button>
                   </motion.div>
                 </div>
@@ -303,10 +305,10 @@ const Products = ({ onOrderClick }) => {
                       {product.price && product.discount_price && product.price > product.discount_price && (
                         <div className="flex items-center justify-between">
                           <p className="text-sm text-green-600 font-bold">
-                            Save ₹{product.price - product.discount_price}
+                            {t('products.save')} ₹{product.price - product.discount_price}
                           </p>
                           <p className="text-xs text-gray-500">
-                            Inclusive of all taxes
+                            {t('products.inclusiveTax')}
                           </p>
                         </div>
                       )}
@@ -322,7 +324,7 @@ const Products = ({ onOrderClick }) => {
                       className="flex-1 bg-gray-100 text-gray-800 py-3 rounded-lg font-semibold hover:bg-gray-200 transition-all duration-300 flex items-center justify-center space-x-1 text-sm"
                     >
                       <FaEye />
-                      <span>Details</span>
+                      <span>{t('products.details')}</span>
                     </motion.button>
                     <motion.button
                       whileHover={{ scale: 1.05 }}
@@ -334,7 +336,7 @@ const Products = ({ onOrderClick }) => {
                       className="flex-1 bg-gradient-to-r from-primary to-secondary text-white py-3 rounded-lg font-semibold hover:shadow-lg transition-all duration-300 flex items-center justify-center space-x-1 text-sm"
                     >
                       <FaShoppingCart />
-                      <span>Order</span>
+                      <span>{t('products.order')}</span>
                     </motion.button>
                   </div>
                 </div>

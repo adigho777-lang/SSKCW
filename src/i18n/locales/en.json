@@ -27,7 +27,22 @@
     "subtitle": "Discover powerful products and solutions for your body",
     "orderNow": "Order Now",
     "exploreProducts": "Explore Products",
-    "startNow": "Start Now"
+    "startNow": "Start Now",
+    "natural": "100% Natural",
+    "naturalDesc": "Pure Ayurvedic ingredients",
+    "certified": "Certified",
+    "certifiedDesc": "Quality assured products",
+    "fastDelivery": "Fast Delivery",
+    "fastDeliveryDesc": "Quick & reliable shipping",
+    "provenResults": "Proven Results",
+    "provenResultsDesc": "Thousands of happy customers",
+    "whyChoose": "Why Choose SSKCW?",
+    "expertGuidance": "Expert Guidance",
+    "expertGuidanceDesc": "Personalized health solutions",
+    "qualityProducts": "Quality Products",
+    "qualityProductsDesc": "100% authentic Ayurvedic products",
+    "provenResultsTitle": "Proven Results",
+    "provenResultsDesc2": "Trusted by thousands of customers"
   },
   "products": {
     "title": "Our Products",
