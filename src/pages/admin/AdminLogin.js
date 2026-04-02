@@ -21,20 +21,28 @@ const AdminLogin = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Initialize reCAPTCHA only when on phone login method and phone step
+    // Initialize invisible reCAPTCHA only when on phone login method and phone step
     if (loginMethod === 'phone' && step === 'phone') {
       // Small delay to ensure DOM is ready
       const timer = setTimeout(() => {
         if (!window.recaptchaVerifier) {
           try {
             window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
-              size: 'normal',
+              size: 'invisible',
               callback: () => {
-                // reCAPTCHA solved
+                // reCAPTCHA solved automatically
+                console.log('reCAPTCHA verified');
               },
               'expired-callback': () => {
-                setError('reCAPTCHA expired. Please try again.');
+                setError('Session expired. Please try again.');
               }
+            });
+            
+            // Render the invisible reCAPTCHA
+            window.recaptchaVerifier.render().then((widgetId) => {
+              window.recaptchaWidgetId = widgetId;
+            }).catch((error) => {
+              console.error('Error rendering reCAPTCHA:', error);
             });
           } catch (error) {
             console.error('reCAPTCHA initialization error:', error);

@@ -25,16 +25,29 @@ const UserLogin = () => {
       navigate('/');
     }
 
-    // Initialize reCAPTCHA
+    // Initialize invisible reCAPTCHA
     if (!window.recaptchaVerifier) {
       window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
-        size: 'normal',
+        size: 'invisible',
         callback: () => {
-          // reCAPTCHA solved
+          // reCAPTCHA solved automatically
+          console.log('reCAPTCHA verified');
         },
         'expired-callback': () => {
-          setError('reCAPTCHA expired. Please try again.');
+          setError('Session expired. Please try again.');
+          // Recreate verifier
+          if (window.recaptchaVerifier) {
+            window.recaptchaVerifier.clear();
+            window.recaptchaVerifier = null;
+          }
         }
+      });
+      
+      // Render the reCAPTCHA
+      window.recaptchaVerifier.render().then((widgetId) => {
+        window.recaptchaWidgetId = widgetId;
+      }).catch((error) => {
+        console.error('Error rendering reCAPTCHA:', error);
       });
     }
 
@@ -74,15 +87,21 @@ const UserLogin = () => {
         setError('Failed to send OTP. Please try again.');
       }
       
-      // Reset reCAPTCHA
+      // Reset reCAPTCHA on error
       if (window.recaptchaVerifier) {
         window.recaptchaVerifier.clear();
+        window.recaptchaVerifier = null;
+        
+        // Recreate invisible reCAPTCHA
         window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
-          size: 'normal',
-          callback: () => {},
-          'expired-callback': () => {
-            setError('reCAPTCHA expired. Please try again.');
+          size: 'invisible',
+          callback: () => {
+            console.log('reCAPTCHA verified');
           }
+        });
+        
+        window.recaptchaVerifier.render().catch((error) => {
+          console.error('Error rendering reCAPTCHA:', error);
         });
       }
     } finally {
