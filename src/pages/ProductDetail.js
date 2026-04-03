@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import { getProductById } from '../services/api';
+import { getTranslatedProduct } from '../utils/translateAPI';
 import Navbar from '../components/Navbar';
 import { 
   FaArrowLeft, 
@@ -19,6 +21,7 @@ import {
 } from 'react-icons/fa';
 
 const ProductDetail = ({ onOrderClick }) => {
+  const { t, i18n } = useTranslation();
   const { id } = useParams();
   const navigate = useNavigate();
   const [product, setProduct] = useState(null);
@@ -31,14 +34,16 @@ const ProductDetail = ({ onOrderClick }) => {
       await fetchProduct();
     };
     loadProduct();
-  }, [id]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [id, i18n.language]); // Re-fetch when language changes
 
   const fetchProduct = async () => {
     try {
       setLoading(true);
       setError(null);
       const data = await getProductById(id);
-      setProduct(data);
+      // Translate product based on current language
+      const translatedProduct = getTranslatedProduct(data, i18n.language);
+      setProduct(translatedProduct);
     } catch (error) {
       console.error('Error fetching product:', error);
       setError(error.message);
@@ -106,7 +111,7 @@ const ProductDetail = ({ onOrderClick }) => {
           className="flex items-center text-primary hover:text-secondary mb-8 transition"
         >
           <FaArrowLeft className="mr-2" />
-          <span className="font-semibold">Back to Products</span>
+          <span className="font-semibold">{t('productDetail.backToProducts')}</span>
         </button>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
@@ -171,17 +176,17 @@ const ProductDetail = ({ onOrderClick }) => {
                 )}
                 {product.is_bestseller && (
                   <span className="inline-block bg-yellow-500 text-white px-4 py-1 rounded-full text-sm font-semibold">
-                    ⭐ Bestseller
+                    ⭐ {t('productDetail.bestseller')}
                   </span>
                 )}
                 {product.is_featured && (
                   <span className="inline-block bg-purple-500 text-white px-4 py-1 rounded-full text-sm font-semibold">
-                    ✨ Featured
+                    ✨ {t('productDetail.featured')}
                   </span>
                 )}
                 {product.is_trending && (
                   <span className="inline-block bg-pink-500 text-white px-4 py-1 rounded-full text-sm font-semibold">
-                    🔥 Trending
+                    🔥 {t('productDetail.trending')}
                   </span>
                 )}
               </div>
@@ -219,9 +224,9 @@ const ProductDetail = ({ onOrderClick }) => {
                   </>
                 )}
               </div>
-              <p className="text-sm text-gray-600">Inclusive of all taxes</p>
+              <p className="text-sm text-gray-600">{t('products.inclusiveTax')}</p>
               {product.free_shipping && (
-                <p className="text-sm text-green-600 font-semibold mt-2">✓ Free Shipping</p>
+                <p className="text-sm text-green-600 font-semibold mt-2">✓ {t('productDetail.freeDelivery')}</p>
               )}
             </motion.div>
 
@@ -234,7 +239,7 @@ const ProductDetail = ({ onOrderClick }) => {
               >
                 <h3 className="text-2xl font-bold text-gray-900 mb-4 flex items-center">
                   <FaStethoscope className="mr-3 text-red-500" />
-                  Diseases Treated
+                  {t('productDetail.diseasesTreated')}
                 </h3>
                 <div className="flex flex-wrap gap-2">
                   {product.diseases_treated.map((disease, i) => (
@@ -259,7 +264,7 @@ const ProductDetail = ({ onOrderClick }) => {
               >
                 <h3 className="text-2xl font-bold text-gray-900 mb-4 flex items-center">
                   <FaHeartbeat className="mr-3 text-pink-500" />
-                  Symptoms Relief
+                  {t('productDetail.symptomsRelief')}
                 </h3>
                 <ul className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   {product.symptoms_relief.map((symptom, i) => (
@@ -282,7 +287,7 @@ const ProductDetail = ({ onOrderClick }) => {
               >
                 <h3 className="text-2xl font-bold text-gray-900 mb-4 flex items-center">
                   <FaUserMd className="mr-3 text-blue-500" />
-                  Body Parts Affected
+                  {t('productDetail.bodyPartsAffected')}
                 </h3>
                 <div className="flex flex-wrap gap-2">
                   {product.body_parts_affected.map((part, i) => (
@@ -305,7 +310,7 @@ const ProductDetail = ({ onOrderClick }) => {
               className="w-full bg-gradient-to-r from-primary to-secondary text-white py-4 rounded-xl font-bold text-lg hover:shadow-2xl transition-all duration-300 flex items-center justify-center space-x-2"
             >
               <FaShoppingCart />
-              <span>Order Now</span>
+              <span>{t('productDetail.orderNow')}</span>
             </motion.button>
 
             {/* Delivery Info */}
@@ -343,7 +348,7 @@ const ProductDetail = ({ onOrderClick }) => {
           transition={{ delay: 0.5, repeat: Infinity, repeatType: "reverse", duration: 1 }}
           className="text-center mt-8 mb-4"
         >
-          <p className="text-gray-600 font-semibold mb-2">Scroll down for more information</p>
+          <p className="text-gray-600 font-semibold mb-2">{t('productDetail.scrollDown')}</p>
           <FaChevronDown className="mx-auto text-primary text-2xl animate-bounce" />
         </motion.div>
 
@@ -356,7 +361,7 @@ const ProductDetail = ({ onOrderClick }) => {
               animate={{ opacity: 1, y: 0 }}
               className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl shadow-lg p-8 border border-blue-200"
             >
-              <h2 className="text-3xl font-bold text-gray-900 mb-4">What Is It?</h2>
+              <h2 className="text-3xl font-bold text-gray-900 mb-4">{t('productDetail.whatIsIt')}</h2>
               <p className="text-gray-700 text-lg leading-relaxed">{product.what_is_it}</p>
             </motion.div>
           )}
@@ -368,7 +373,7 @@ const ProductDetail = ({ onOrderClick }) => {
               animate={{ opacity: 1, y: 0 }}
               className="bg-white rounded-xl shadow-lg p-8"
             >
-              <h2 className="text-3xl font-bold text-gray-900 mb-6">Works Best For</h2>
+              <h2 className="text-3xl font-bold text-gray-900 mb-6">{t('productDetail.worksBestFor')}</h2>
               {product.works_for && (
                 <p className="text-gray-700 mb-4 leading-relaxed">{product.works_for}</p>
               )}
@@ -394,7 +399,7 @@ const ProductDetail = ({ onOrderClick }) => {
               animate={{ opacity: 1, y: 0 }}
               className="bg-white rounded-xl shadow-lg p-8"
             >
-              <h2 className="text-3xl font-bold text-gray-900 mb-6">Key Benefits</h2>
+              <h2 className="text-3xl font-bold text-gray-900 mb-6">{t('productDetail.keyBenefits')}</h2>
               <ul className="grid md:grid-cols-2 gap-4">
                 {product.benefits.map((benefit, i) => (
                   <li key={i} className="flex items-start">
@@ -413,7 +418,7 @@ const ProductDetail = ({ onOrderClick }) => {
               animate={{ opacity: 1, y: 0 }}
               className="bg-yellow-50 border-l-4 border-yellow-500 rounded-xl shadow-lg p-8"
             >
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">💡 Important Note</h2>
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">💡 {t('productDetail.importantNote')}</h2>
               <p className="text-gray-700 text-lg leading-relaxed">{product.trigger}</p>
             </motion.div>
           )}
@@ -425,7 +430,7 @@ const ProductDetail = ({ onOrderClick }) => {
               animate={{ opacity: 1, y: 0 }}
               className="bg-white rounded-xl shadow-lg p-8"
             >
-              <h2 className="text-3xl font-bold text-gray-900 mb-6">Product Description</h2>
+              <h2 className="text-3xl font-bold text-gray-900 mb-6">{t('productDetail.productDescription')}</h2>
               <p className="text-gray-700 whitespace-pre-line leading-relaxed">
                 {product.description_en || product.description}
               </p>
@@ -441,7 +446,7 @@ const ProductDetail = ({ onOrderClick }) => {
             >
               <h2 className="text-3xl font-bold text-gray-900 mb-6 flex items-center">
                 <FaHeartbeat className="mr-3 text-red-500" />
-                Health Benefits
+                {t('productDetail.healthBenefits')}
               </h2>
               <p className="text-gray-700 whitespace-pre-line leading-relaxed">
                 {product.health_benefits}
@@ -458,7 +463,7 @@ const ProductDetail = ({ onOrderClick }) => {
             >
               <h2 className="text-3xl font-bold text-gray-900 mb-6 flex items-center">
                 <FaLeaf className="mr-3 text-green-500" />
-                Natural Ingredients
+                {t('productDetail.naturalIngredients')}
               </h2>
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                 {product.ingredients.map((ingredient, i) => (
@@ -485,18 +490,18 @@ const ProductDetail = ({ onOrderClick }) => {
             >
               <h2 className="text-3xl font-bold text-gray-900 mb-6 flex items-center">
                 <FaShieldAlt className="mr-3 text-blue-500" />
-                Usage Guidelines
+                {t('productDetail.usageGuidelines')}
               </h2>
               <div className="grid md:grid-cols-2 gap-6">
                 {product.who_should_use && (
                   <div className="bg-green-50 border border-green-200 rounded-lg p-6">
-                    <h3 className="text-xl font-bold text-green-800 mb-3">✓ Who Should Use</h3>
+                    <h3 className="text-xl font-bold text-green-800 mb-3">✓ {t('productDetail.whoShouldUse')}</h3>
                     <p className="text-gray-700">{product.who_should_use}</p>
                   </div>
                 )}
                 {product.who_should_not_use && (
                   <div className="bg-red-50 border border-red-200 rounded-lg p-6">
-                    <h3 className="text-xl font-bold text-red-800 mb-3">✗ Who Should Not Use</h3>
+                    <h3 className="text-xl font-bold text-red-800 mb-3">✗ {t('productDetail.whoShouldNotUse')}</h3>
                     <p className="text-gray-700">{product.who_should_not_use}</p>
                   </div>
                 )}
@@ -513,17 +518,17 @@ const ProductDetail = ({ onOrderClick }) => {
             >
               <h2 className="text-3xl font-bold text-gray-900 mb-6 flex items-center">
                 <FaExclamationTriangle className="mr-3 text-yellow-600" />
-                Important Information
+                {t('productDetail.importantInfo')}
               </h2>
               {product.precautions && (
                 <div className="mb-4">
-                  <h3 className="text-xl font-bold text-gray-800 mb-2">Precautions:</h3>
+                  <h3 className="text-xl font-bold text-gray-800 mb-2">{t('productDetail.precautions')}:</h3>
                   <p className="text-gray-700">{product.precautions}</p>
                 </div>
               )}
               {product.side_effects && (
                 <div>
-                  <h3 className="text-xl font-bold text-gray-800 mb-2">Side Effects:</h3>
+                  <h3 className="text-xl font-bold text-gray-800 mb-2">{t('productDetail.sideEffects')}:</h3>
                   <p className="text-gray-700">{product.side_effects}</p>
                 </div>
               )}
@@ -539,7 +544,7 @@ const ProductDetail = ({ onOrderClick }) => {
             >
               <h2 className="text-3xl font-bold text-gray-900 mb-6 flex items-center">
                 <FaQuestionCircle className="mr-3 text-purple-500" />
-                Frequently Asked Questions
+                {t('productDetail.faq')}
               </h2>
               <div className="space-y-4">
                 {product.faq.map((item, i) => (
@@ -563,7 +568,7 @@ const ProductDetail = ({ onOrderClick }) => {
             >
               <h2 className="text-3xl font-bold text-gray-900 mb-6 flex items-center">
                 <FaStar className="mr-3 text-yellow-500" />
-                Customer Reviews
+                {t('productDetail.customerReviews')}
               </h2>
               <div className="space-y-6">
                 {product.customer_reviews.map((review, i) => (
@@ -580,7 +585,7 @@ const ProductDetail = ({ onOrderClick }) => {
                           ))}
                           {review.verified && (
                             <span className="ml-2 text-xs bg-green-100 text-green-800 px-2 py-1 rounded">
-                              Verified Purchase
+                              {t('productDetail.verifiedPurchase')}
                             </span>
                           )}
                         </div>
@@ -601,36 +606,36 @@ const ProductDetail = ({ onOrderClick }) => {
               animate={{ opacity: 1, y: 0 }}
               className="bg-white rounded-xl shadow-lg p-8"
             >
-              <h2 className="text-3xl font-bold text-gray-900 mb-6">Product Specifications</h2>
+              <h2 className="text-3xl font-bold text-gray-900 mb-6">{t('productDetail.productSpecs')}</h2>
               <div className="grid md:grid-cols-2 gap-6">
                 {product.weight && (
                   <div>
-                    <span className="font-semibold text-gray-700">Weight:</span>
+                    <span className="font-semibold text-gray-700">{t('productDetail.weight')}:</span>
                     <span className="ml-2 text-gray-600">{product.weight}</span>
                   </div>
                 )}
                 {product.shelf_life && (
                   <div>
-                    <span className="font-semibold text-gray-700">Shelf Life:</span>
+                    <span className="font-semibold text-gray-700">{t('productDetail.shelfLife')}:</span>
                     <span className="ml-2 text-gray-600">{product.shelf_life}</span>
                   </div>
                 )}
                 {product.package_contents && (
                   <div>
-                    <span className="font-semibold text-gray-700">Package Contents:</span>
+                    <span className="font-semibold text-gray-700">{t('productDetail.packageContents')}:</span>
                     <span className="ml-2 text-gray-600">{product.package_contents}</span>
                   </div>
                 )}
                 {product.storage_instructions && (
                   <div>
-                    <span className="font-semibold text-gray-700">Storage:</span>
+                    <span className="font-semibold text-gray-700">{t('productDetail.storage')}:</span>
                     <span className="ml-2 text-gray-600">{product.storage_instructions}</span>
                   </div>
                 )}
               </div>
               {product.certifications && product.certifications.length > 0 && (
                 <div className="mt-4">
-                  <span className="font-semibold text-gray-700">Certifications:</span>
+                  <span className="font-semibold text-gray-700">{t('productDetail.certifications')}:</span>
                   <div className="flex flex-wrap gap-2 mt-2">
                     {product.certifications.map((cert, i) => (
                       <span
@@ -667,7 +672,7 @@ const ProductDetail = ({ onOrderClick }) => {
               animate={{ opacity: 1, y: 0 }}
               className="bg-white rounded-xl shadow-lg p-8"
             >
-              <h2 className="text-3xl font-bold text-gray-900 mb-6">Related Products</h2>
+              <h2 className="text-3xl font-bold text-gray-900 mb-6">{t('productDetail.relatedProducts')}</h2>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 {product.related_products.map((relatedId, i) => (
                   <button

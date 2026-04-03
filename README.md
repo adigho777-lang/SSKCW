@@ -17,6 +17,7 @@ Modern, professional health and fitness e-commerce website with admin panel and 
 - Detailed product pages with thumbnails
 - Smart pricing (strikethrough + discount)
 - Alphabetical sorting (A-Z, then numbers)
+- **🌐 Multilingual Support (EN/HI/MR)**
 
 ### 🔐 Authentication
 - Phone OTP login (Firebase)
@@ -175,6 +176,7 @@ Copy rules from `firestore.rules` and `storage.rules` to Firebase Console.
 ## 📖 Documentation
 
 - **[START_HERE.md](START_HERE.md)** - Quick start guide
+- **[MULTILINGUAL_API_INTEGRATION.md](MULTILINGUAL_API_INTEGRATION.md)** - 🌐 Multilingual API guide
 - **[ADMIN_SETUP_INSTRUCTIONS.md](ADMIN_SETUP_INSTRUCTIONS.md)** - Admin setup
 - **[BACKUP_SYSTEM_GUIDE.md](BACKUP_SYSTEM_GUIDE.md)** - Backup system docs
 - **[NETWORK_ERROR_FIX.md](NETWORK_ERROR_FIX.md)** - Troubleshooting
@@ -292,12 +294,30 @@ Three ways to configure:
 
 Base URL: `https://sskcw-api.vercel.app/api`
 
-- `GET /products` - List all products
-- `GET /products/:id` - Get product details
+### Products
+- `GET /products` - List all products (basic info)
+- `GET /products/:id` - Get product details (full info)
+- `GET /shop` - Products with full details + filters
+
+### Categories & Stats
+- `GET /categories` - Get categories with stats
+- `GET /stats` - Get API statistics
+
+### Bundles & Comparisons
+- `GET /bundles` - Get product bundles (multilingual)
+- `GET /comparisons` - Get product comparisons (multilingual)
+
+### Orders & Leads
 - `POST /orders` - Create order
 - `POST /leads` - Create lead
-- `GET /categories` - Get categories
-- `GET /stats` - Get statistics
+
+### Multilingual Support
+All endpoints support 3 languages:
+- 🇬🇧 English (EN) - Default
+- 🇮🇳 Hindi (HI)
+- 🇮🇳 Marathi (MR)
+
+**See [MULTILINGUAL_API_INTEGRATION.md](MULTILINGUAL_API_INTEGRATION.md) for complete guide.**
 
 ---
 
@@ -346,12 +366,14 @@ For issues or questions:
 
 ## 🎯 Roadmap
 
+- [x] ~~Multi-language support~~ ✅ **COMPLETED** (EN/HI/MR)
 - [ ] Add payment gateway integration
 - [ ] Implement user dashboard
 - [ ] Add product reviews
-- [ ] Multi-language support
 - [ ] Mobile app (React Native)
 - [ ] Advanced analytics
+- [ ] Product bundles page
+- [ ] Product comparison page
 
 ---
 

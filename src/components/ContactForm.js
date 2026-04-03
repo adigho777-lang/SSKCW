@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { createLead } from '../services/api';
 import { FaQrcode, FaWhatsapp } from 'react-icons/fa';
 
 const ContactForm = () => {
+  const { t } = useTranslation();
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
@@ -74,18 +76,18 @@ SSKCW - Free Plan Request
     <section id="contact" className="py-20 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16 animate-fade-in">
-          <h2 className="text-4xl font-bold text-gray-900 mb-4">Get Started Today</h2>
-          <p className="text-xl text-gray-600">Fill the form and start your transformation journey</p>
+          <h2 className="text-4xl font-bold text-gray-900 mb-4">{t('contact.title')}</h2>
+          <p className="text-xl text-gray-600">{t('contact.subtitle')}</p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
           <div className="bg-gradient-to-br from-green-50 to-blue-50 p-8 rounded-xl shadow-lg animate-fade-in">
-            <h3 className="text-2xl font-bold text-gray-900 mb-6">Contact Form</h3>
+            <h3 className="text-2xl font-bold text-gray-900 mb-6">{t('contact.formTitle')}</h3>
             {success && (
               <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
                 <div className="flex items-center">
                   <FaWhatsapp className="mr-2" />
-                  <span>Thank you! We'll contact you soon.</span>
+                  <span>{t('contact.success')}</span>
                 </div>
               </div>
             )}
@@ -96,7 +98,7 @@ SSKCW - Free Plan Request
             )}
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-gray-700 font-semibold mb-2">Name</label>
+                <label className="block text-gray-700 font-semibold mb-2">{t('contact.name')}</label>
                 <input
                   type="text"
                   name="name"
@@ -107,7 +109,7 @@ SSKCW - Free Plan Request
                 />
               </div>
               <div>
-                <label className="block text-gray-700 font-semibold mb-2">Phone</label>
+                <label className="block text-gray-700 font-semibold mb-2">{t('contact.phone')}</label>
                 <input
                   type="tel"
                   name="phone"
@@ -118,16 +120,16 @@ SSKCW - Free Plan Request
                 />
               </div>
               <div>
-                <label className="block text-gray-700 font-semibold mb-2">Goal</label>
+                <label className="block text-gray-700 font-semibold mb-2">{t('contact.goal')}</label>
                 <select
                   name="goal"
                   value={formData.goal}
                   onChange={handleChange}
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
                 >
-                  <option value="Weight Loss">Weight Loss</option>
-                  <option value="Fitness">Fitness</option>
-                  <option value="Energy">Energy</option>
+                  <option value="Weight Loss">{t('contact.goalWeightLoss')}</option>
+                  <option value="Fitness">{t('contact.goalFitness')}</option>
+                  <option value="Energy">{t('contact.goalEnergy')}</option>
                 </select>
               </div>
               <button
@@ -135,16 +137,16 @@ SSKCW - Free Plan Request
                 disabled={loading}
                 className="w-full bg-primary text-white py-3 rounded-lg font-semibold hover:bg-secondary transition-all duration-300 transform hover:scale-105 disabled:opacity-50"
               >
-                {loading ? 'Submitting...' : 'Get Free Plan'}
+                {loading ? t('contact.sending') : t('contact.send')}
               </button>
             </form>
           </div>
 
           <div className="bg-gradient-to-br from-blue-50 to-green-50 p-8 rounded-xl shadow-lg animate-fade-in flex flex-col items-center justify-center">
             <FaQrcode className="text-8xl text-primary mb-6" />
-            <h3 className="text-2xl font-bold text-gray-900 mb-4">Scan QR Code</h3>
+            <h3 className="text-2xl font-bold text-gray-900 mb-4">{t('contact.qrTitle')}</h3>
             <p className="text-gray-600 text-center mb-6">
-              Scan this QR code to chat with us instantly on WhatsApp
+              {t('contact.qrSubtitle')}
             </p>
             <div className="bg-white p-4 rounded-lg shadow-md">
               <img
@@ -153,7 +155,7 @@ SSKCW - Free Plan Request
                 className="w-48 h-48"
               />
             </div>
-            <p className="text-sm text-gray-500 mt-4">Or click the WhatsApp button below</p>
+            <p className="text-sm text-gray-500 mt-4">{t('contact.qrFooter')}</p>
           </div>
         </div>
       </div>

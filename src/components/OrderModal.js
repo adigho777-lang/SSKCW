@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { FaTimes, FaWhatsapp, FaEnvelope, FaSave } from 'react-icons/fa';
 import { createOrder } from '../services/api';
 import { backupOrder, sendOrderViaEmail } from '../utils/orderBackup';
@@ -6,6 +7,7 @@ import { getCurrentUser, isUserLoggedIn } from '../utils/userHelpers';
 import { useNavigate } from 'react-router-dom';
 
 const OrderModal = ({ product, onClose }) => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: '',
@@ -120,40 +122,40 @@ const OrderModal = ({ product, onClose }) => {
           <FaTimes size={24} />
         </button>
 
-        <h2 className="text-2xl font-bold text-gray-900 mb-4">Order {product.title}</h2>
+        <h2 className="text-2xl font-bold text-gray-900 mb-4">{t('orderModal.title')} {product.title}</h2>
 
         {success ? (
           <div className="text-center py-8">
             <div className="text-green-500 text-5xl mb-4">✓</div>
             <p className="text-xl font-semibold text-gray-900">
-              {backupUsed ? 'Order Received!' : 'Order Placed Successfully!'}
+              {backupUsed ? t('orderModal.orderReceived') : t('orderModal.orderPlaced')}
             </p>
             {backupUsed ? (
               <div className="mt-4 space-y-2">
-                <p className="text-gray-600">Your order has been saved and sent via:</p>
+                <p className="text-gray-600">{t('orderModal.orderSavedVia')}</p>
                 <div className="flex justify-center space-x-4 mt-3">
                   <div className="flex items-center text-green-600">
                     <FaWhatsapp className="mr-2" />
-                    <span>WhatsApp</span>
+                    <span>{t('orderModal.whatsapp')}</span>
                   </div>
                   <div className="flex items-center text-blue-600">
                     <FaSave className="mr-2" />
-                    <span>Saved Locally</span>
+                    <span>{t('orderModal.savedLocally')}</span>
                   </div>
                 </div>
                 <p className="text-sm text-gray-500 mt-3">
-                  We'll contact you soon to confirm!
+                  {t('orderModal.contactSoon')}
                 </p>
                 <button
                   onClick={handleSendEmail}
                   className="mt-4 flex items-center justify-center mx-auto bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition"
                 >
                   <FaEnvelope className="mr-2" />
-                  Also Send via Email
+                  {t('orderModal.alsoSendEmail')}
                 </button>
               </div>
             ) : (
-              <p className="text-gray-600 mt-2">We'll contact you soon.</p>
+              <p className="text-gray-600 mt-2">{t('orderModal.contactSoon')}</p>
             )}
           </div>
         ) : (
@@ -164,7 +166,7 @@ const OrderModal = ({ product, onClose }) => {
               </div>
             )}
             <div>
-              <label className="block text-gray-700 font-semibold mb-2">Name</label>
+              <label className="block text-gray-700 font-semibold mb-2">{t('orderModal.name')}</label>
               <input
                 type="text"
                 name="name"
@@ -175,7 +177,7 @@ const OrderModal = ({ product, onClose }) => {
               />
             </div>
             <div>
-              <label className="block text-gray-700 font-semibold mb-2">Phone</label>
+              <label className="block text-gray-700 font-semibold mb-2">{t('orderModal.phone')}</label>
               <input
                 type="tel"
                 name="phone"
@@ -186,7 +188,7 @@ const OrderModal = ({ product, onClose }) => {
               />
             </div>
             <div>
-              <label className="block text-gray-700 font-semibold mb-2">Address</label>
+              <label className="block text-gray-700 font-semibold mb-2">{t('orderModal.address')}</label>
               <textarea
                 name="address"
                 value={formData.address}
@@ -197,23 +199,23 @@ const OrderModal = ({ product, onClose }) => {
               />
             </div>
             <div>
-              <label className="block text-gray-700 font-semibold mb-2">ID Number (Optional)</label>
+              <label className="block text-gray-700 font-semibold mb-2">{t('orderModal.idNumber')}</label>
               <input
                 type="text"
                 name="idNumber"
                 value={formData.idNumber}
                 onChange={handleChange}
-                placeholder="Enter your ID number if available"
+                placeholder={t('orderModal.idNumber')}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
               />
-              <p className="text-sm text-gray-500 mt-1">Optional field for identification</p>
+              <p className="text-sm text-gray-500 mt-1">{t('orderModal.idNumberHelper')}</p>
             </div>
             <button
               type="submit"
               disabled={loading}
               className="w-full bg-primary text-white py-3 rounded-lg font-semibold hover:bg-secondary transition-all duration-300 disabled:opacity-50"
             >
-              {loading ? 'Placing Order...' : 'Place Order'}
+              {loading ? t('orderModal.placingOrder') : t('orderModal.placeOrder')}
             </button>
           </form>
         )}

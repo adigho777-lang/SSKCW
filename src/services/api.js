@@ -248,4 +248,82 @@ export const filterProductsByCategory = async (category) => {
   }
 };
 
+/**
+ * Get shop products (full details with filters)
+ * @param {Object} params - Query parameters (search, category, has_discount, etc.)
+ * @returns {Promise} Products with full details
+ */
+export const getShopProducts = async (params = {}) => {
+  try {
+    const client = setupInterceptors(getApiClient());
+    const queryString = new URLSearchParams(params).toString();
+    const url = queryString ? `${API_ENDPOINTS.SHOP}?${queryString}` : API_ENDPOINTS.SHOP;
+    const response = await client.get(url);
+    return response;
+  } catch (error) {
+    console.error('Error fetching shop products:', error);
+    throw error;
+  }
+};
+
+/**
+ * Get all categories with stats
+ * @returns {Promise} Categories with product counts and price ranges
+ */
+export const getCategories = async () => {
+  try {
+    const client = setupInterceptors(getApiClient());
+    const response = await client.get(API_ENDPOINTS.CATEGORIES);
+    return response;
+  } catch (error) {
+    console.error('Error fetching categories:', error);
+    throw error;
+  }
+};
+
+/**
+ * Get product bundles
+ * @returns {Promise} Array of bundles with translations
+ */
+export const getBundles = async () => {
+  try {
+    const client = setupInterceptors(getApiClient());
+    const response = await client.get(API_ENDPOINTS.BUNDLES);
+    return response;
+  } catch (error) {
+    console.error('Error fetching bundles:', error);
+    throw error;
+  }
+};
+
+/**
+ * Get product comparisons
+ * @returns {Promise} Array of comparisons with translations
+ */
+export const getComparisons = async () => {
+  try {
+    const client = setupInterceptors(getApiClient());
+    const response = await client.get(API_ENDPOINTS.COMPARISONS);
+    return response;
+  } catch (error) {
+    console.error('Error fetching comparisons:', error);
+    throw error;
+  }
+};
+
+/**
+ * Get API statistics
+ * @returns {Promise} API stats and analytics
+ */
+export const getStats = async () => {
+  try {
+    const client = setupInterceptors(getApiClient());
+    const response = await client.get(API_ENDPOINTS.STATS);
+    return response;
+  } catch (error) {
+    console.error('Error fetching stats:', error);
+    throw error;
+  }
+};
+
 export default getApiClient;

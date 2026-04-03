@@ -4,143 +4,248 @@
 const translationCache = new Map();
 
 /**
- * Translate text using browser's built-in capabilities
- * For production, integrate with Google Translate API or LibreTranslate
+ * Get translated field from product based on current language
+ * Supports API fields like: title_mr, title_hi, description_mr, description_hi
+ * Also handles special case: description_en (explicit English field)
  */
-export const translateText = async (text, targetLang) => {
-  // If target is English or text is empty, return as is
-  if (!text || targetLang === 'en') {
-    return text;
+export const getTranslatedField = (product, fieldName, currentLang) => {
+  if (!product || !fieldName) return '';
+  
+  // Special handling for description field
+  if (fieldName === 'description') {
+    if (currentLang === 'en') {
+      // For English, prefer description_en, fallback to description
+      return product.description_en || product.description || '';
+    } else {
+      // For other languages, try translated field first
+      const translatedFieldName = `${fieldName}_${currentLang}`;
+      return product[translatedFieldName] || product.description_en || product.description || '';
+    }
   }
-
-  // Check cache first
-  const cacheKey = `${text}_${targetLang}`;
-  if (translationCache.has(cacheKey)) {
-    return translationCache.get(cacheKey);
+  
+  // If English or no translation needed, return original field
+  if (currentLang === 'en') {
+    return product[fieldName] || '';
   }
-
-  try {
-    // For now, return original text
-    // In production, integrate with translation API:
-    
-    // Option 1: Google Translate API (paid)
-    // const response = await fetch(`https://translation.googleapis.com/language/translate/v2?key=${API_KEY}`, {
-    //   method: 'POST',
-    //   body: JSON.stringify({
-    //     q: text,
-    //     target: targetLang,
-    //     source: 'en'
-    //   })
-    // });
-    
-    // Option 2: LibreTranslate (free, self-hosted)
-    // const response = await fetch('https://libretranslate.de/translate', {
-    //   method: 'POST',
-    //   body: JSON.stringify({
-    //     q: text,
-    //     source: 'en',
-    //     target: targetLang
-    //   }),
-    //   headers: { 'Content-Type': 'application/json' }
-    // });
-    
-    // For demo, return original text
-    // Cache the result
-    translationCache.set(cacheKey, text);
-    return text;
-    
-  } catch (error) {
-    console.error('Translation error:', error);
-    return text; // Return original on error
-  }
+  
+  // Try to get translated field (e.g., title_mr, title_hi)
+  const translatedFieldName = `${fieldName}_${currentLang}`;
+  const translatedValue = product[translatedFieldName];
+  
+  // Return translated value if exists, otherwise fallback to original
+  return translatedValue || product[fieldName] || '';
 };
 
 /**
- * Translate product data
+ * Get translated product - uses pre-translated fields from API
+ * This is MUCH faster than dynamic translation
+ * Supports all SSKCW API v3.0 multilingual fields
  */
-export const translateProduct = async (product, targetLang) => {
-  if (targetLang === 'en' || !product) {
+export const getTranslatedProduct = (product, currentLang) => {
+  if (!product || currentLang === 'en') {
     return product;
   }
-
-  // Check if product already has translated fields
-  if (targetLang === 'mr' && product.description_mr) {
-    return {
-      ...product,
-      title: product.title_mr || product.title,
-      description: product.description_mr,
-      short_description: product.short_description_mr || product.short_description
-    };
+  
+  // Create a new product object with translated fields
+  const translatedProduct = { ...product };
+  
+  // List of all translatable text fields from API v3.0
+  const translatableFields = [
+    // Basic Info
+    'title',
+    'category',
+    'sub_category',
+    
+    // Content
+    'description',
+    'trigger',
+    'short_description',
+    'what_is_it',
+    'works_for',
+    
+    // Health
+    'health_benefits',
+    
+    // Usage
+    'treatment_duration',
+    'when_to_expect_results',
+    'who_can_benefit',
+    'who_should_use',
+    'who_should_not_use',
+    'precautions',
+    'side_effects',
+    'warnings',
+    
+    // Product Details
+    'composition',
+    'shelf_life',
+    'package_contents',
+    'storage_instructions',
+    
+    // Marketing
+    'seo_title',
+    'seo_description',
+    
+    // Support
+    'availability',
+    'return_policy',
+    'delivery_time',
+    'effectiveness'
+  ];
+  
+  // Replace each field with translated version if available
+  translatableFields.forEach(field => {
+    const translatedValue = getTranslatedField(product, field, currentLang);
+    if (translatedValue) {
+      translatedProduct[field] = translatedValue;
+    }
+  });
+  
+  // Handle array fields from API v3.0
+  const arrayFields = [
+    'benefits',
+    'diseases_treated',
+    'symptoms_relief',
+    'body_parts_affected',
+    'target_conditions',
+    'ingredients',
+    'tags',
+    'certifications'
+  ];
+  
+  arrayFields.forEach(field => {
+    const arrayFieldName = `${field}_${currentLang}`;
+    if (product[arrayFieldName] && Array.isArray(product[arrayFieldName])) {
+      translatedProduct[field] = product[arrayFieldName];
+    }
+  });
+  
+  // Handle FAQ array with nested translations
+  if (product.faq && Array.isArray(product.faq)) {
+    const faqFieldName = `faq_${currentLang}`;
+    if (product[faqFieldName] && Array.isArray(product[faqFieldName])) {
+      translatedProduct.faq = product[faqFieldName];
+    }
   }
-
-  if (targetLang === 'hi' && product.description_hi) {
-    return {
-      ...product,
-      title: product.title_hi || product.title,
-      description: product.description_hi,
-      short_description: product.short_description_hi || product.short_description
-    };
-  }
-
-  // If no pre-translated data, use API translation
-  try {
-    const translatedProduct = { ...product };
-    
-    // Translate key fields
-    if (product.title) {
-      translatedProduct.title = await translateText(product.title, targetLang);
-    }
-    
-    if (product.description) {
-      translatedProduct.description = await translateText(product.description, targetLang);
-    }
-    
-    if (product.short_description) {
-      translatedProduct.short_description = await translateText(product.short_description, targetLang);
-    }
-    
-    // Translate arrays
-    if (product.benefits && Array.isArray(product.benefits)) {
-      translatedProduct.benefits = await Promise.all(
-        product.benefits.map(benefit => translateText(benefit, targetLang))
-      );
-    }
-    
-    if (product.diseases_treated && Array.isArray(product.diseases_treated)) {
-      translatedProduct.diseases_treated = await Promise.all(
-        product.diseases_treated.map(disease => translateText(disease, targetLang))
-      );
-    }
-    
-    if (product.symptoms_relief && Array.isArray(product.symptoms_relief)) {
-      translatedProduct.symptoms_relief = await Promise.all(
-        product.symptoms_relief.map(symptom => translateText(symptom, targetLang))
-      );
-    }
-    
-    return translatedProduct;
-  } catch (error) {
-    console.error('Error translating product:', error);
-    return product; // Return original on error
-  }
+  
+  return translatedProduct;
 };
 
 /**
- * Translate array of products
+ * Get translated products array
  */
-export const translateProducts = async (products, targetLang) => {
-  if (targetLang === 'en' || !products || !Array.isArray(products)) {
+export const getTranslatedProducts = (products, currentLang) => {
+  if (!products || !Array.isArray(products) || currentLang === 'en') {
     return products;
   }
+  
+  return products.map(product => getTranslatedProduct(product, currentLang));
+};
 
-  try {
-    return await Promise.all(
-      products.map(product => translateProduct(product, targetLang))
-    );
-  } catch (error) {
-    console.error('Error translating products:', error);
-    return products;
+/**
+ * Get translated bundle
+ * Handles bundle-specific fields like tagline, best_for, recommended_duration
+ */
+export const getTranslatedBundle = (bundle, currentLang) => {
+  if (!bundle || currentLang === 'en') {
+    return bundle;
   }
+  
+  const translatedBundle = { ...bundle };
+  
+  // Bundle-specific text fields
+  const bundleFields = [
+    'title',
+    'description',
+    'tagline',
+    'recommended_duration'
+  ];
+  
+  bundleFields.forEach(field => {
+    const translatedValue = getTranslatedField(bundle, field, currentLang);
+    if (translatedValue) {
+      translatedBundle[field] = translatedValue;
+    }
+  });
+  
+  // Bundle array fields
+  const arrayFieldName = `best_for_${currentLang}`;
+  if (bundle[arrayFieldName] && Array.isArray(bundle[arrayFieldName])) {
+    translatedBundle.best_for = bundle[arrayFieldName];
+  }
+  
+  return translatedBundle;
+};
+
+/**
+ * Get translated bundles array
+ */
+export const getTranslatedBundles = (bundles, currentLang) => {
+  if (!bundles || !Array.isArray(bundles) || currentLang === 'en') {
+    return bundles;
+  }
+  
+  return bundles.map(bundle => getTranslatedBundle(bundle, currentLang));
+};
+
+/**
+ * Get translated comparison
+ * Handles comparison-specific fields and criteria
+ */
+export const getTranslatedComparison = (comparison, currentLang) => {
+  if (!comparison || currentLang === 'en') {
+    return comparison;
+  }
+  
+  const translatedComparison = { ...comparison };
+  
+  // Comparison text fields
+  const comparisonFields = ['title', 'winner'];
+  
+  comparisonFields.forEach(field => {
+    const translatedValue = getTranslatedField(comparison, field, currentLang);
+    if (translatedValue) {
+      translatedComparison[field] = translatedValue;
+    }
+  });
+  
+  // Translate criteria array
+  if (comparison.criteria && Array.isArray(comparison.criteria)) {
+    translatedComparison.criteria = comparison.criteria.map(criterion => {
+      const translatedCriterion = { ...criterion };
+      
+      // Translate feature name
+      const featureTranslated = getTranslatedField(criterion, 'feature', currentLang);
+      if (featureTranslated) {
+        translatedCriterion.feature = featureTranslated;
+      }
+      
+      // Translate product-specific values
+      Object.keys(criterion).forEach(key => {
+        if (key.startsWith('prod_')) {
+          const translatedKey = `${key}_${currentLang}`;
+          if (criterion[translatedKey]) {
+            translatedCriterion[key] = criterion[translatedKey];
+          }
+        }
+      });
+      
+      return translatedCriterion;
+    });
+  }
+  
+  return translatedComparison;
+};
+
+/**
+ * Get translated comparisons array
+ */
+export const getTranslatedComparisons = (comparisons, currentLang) => {
+  if (!comparisons || !Array.isArray(comparisons) || currentLang === 'en') {
+    return comparisons;
+  }
+  
+  return comparisons.map(comparison => getTranslatedComparison(comparison, currentLang));
 };
 
 /**
@@ -150,9 +255,16 @@ export const clearTranslationCache = () => {
   translationCache.clear();
 };
 
-export default {
-  translateText,
-  translateProduct,
-  translateProducts,
+// Default export
+const translateAPI = {
+  getTranslatedField,
+  getTranslatedProduct,
+  getTranslatedProducts,
+  getTranslatedBundle,
+  getTranslatedBundles,
+  getTranslatedComparison,
+  getTranslatedComparisons,
   clearTranslationCache
 };
+
+export default translateAPI;

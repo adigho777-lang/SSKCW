@@ -3,11 +3,12 @@ import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { getProducts } from '../services/api';
+import { getTranslatedProducts } from '../utils/translateAPI';
 import Navbar from '../components/Navbar';
 import { FaShoppingCart, FaEye, FaSearch } from 'react-icons/fa';
 
 const Products = ({ onOrderClick }) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
@@ -17,7 +18,7 @@ const Products = ({ onOrderClick }) => {
 
   useEffect(() => {
     fetchProducts();
-  }, []);
+  }, [i18n.language]); // Re-fetch when language changes
 
   useEffect(() => {
     if (searchQuery.trim() === '') {
@@ -60,8 +61,11 @@ const Products = ({ onOrderClick }) => {
       const data = await getProducts();
       const productList = Array.isArray(data) ? data : data.products || [];
       
+      // Translate products based on current language using API fields
+      const translatedProducts = getTranslatedProducts(productList, i18n.language);
+      
       // Sort products: A-Z first, then numbers
-      const sortedProducts = productList.sort((a, b) => {
+      const sortedProducts = translatedProducts.sort((a, b) => {
         const titleA = a.title || '';
         const titleB = b.title || '';
         

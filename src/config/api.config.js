@@ -35,6 +35,14 @@ export const API_ENDPOINTS = {
   // Products
   PRODUCTS: '/products',
   PRODUCT_BY_ID: (id) => `/products/${id}`,
+  SHOP: '/shop', // Full product details with filters
+  
+  // Categories
+  CATEGORIES: '/categories',
+  
+  // Bundles & Comparisons
+  BUNDLES: '/bundles',
+  COMPARISONS: '/comparisons',
   
   // Orders
   ORDERS: '/orders',
@@ -43,8 +51,11 @@ export const API_ENDPOINTS = {
   // Leads
   LEADS: '/leads',
   
+  // Stats
+  STATS: '/stats',
+  
   // Test connection
-  TEST: '/products',
+  TEST: '/',
 };
 
 // API Configuration
