@@ -34,6 +34,7 @@ const ProductDetail = ({ onOrderClick }) => {
       await fetchProduct();
     };
     loadProduct();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, i18n.language]); // Re-fetch when language changes
 
   const fetchProduct = async () => {

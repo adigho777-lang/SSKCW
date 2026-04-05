@@ -18,6 +18,7 @@ const Products = ({ onOrderClick }) => {
 
   useEffect(() => {
     fetchProducts();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [i18n.language]); // Re-fetch when language changes
 
   useEffect(() => {
